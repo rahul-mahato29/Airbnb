@@ -8,9 +8,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Data
+@Table(name = "booking")
 public class Booking {
 
     @Id
@@ -45,6 +47,14 @@ public class Booking {
 
     @Column(nullable = false)
     private Integer roomCount;
+
+    @ManyToMany //one booking can contain many guests, and one guest can belong to many booking
+    @JoinTable(
+            name = "booking_guest",
+            joinColumns = @JoinColumn(name = "booking_id"),
+            inverseJoinColumns = @JoinColumn(name = "guest_id")
+    )
+    private Set<Guest> guests;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
