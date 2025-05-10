@@ -1,28 +1,31 @@
 package com.project.AirBnb.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedBy;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "hotel")
-public class Hotel {
+@Table(name = "rome")
+public class Rome {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "hotel_id", nullable = false)
+    private Hotel hotel;
 
-    private String city;
+    @Column(nullable = false)
+    private String type;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal basePrice;
 
     @Column(columnDefinition = "TEXT[]")
     private String[] photos;
@@ -30,13 +33,14 @@ public class Hotel {
     @Column(columnDefinition = "TEXT[]")
     private String[] amenities;
 
-    @Embedded
-    private HotelContactInfo contactInfo;
+    @Column(nullable = false)
+    private Integer totalCount;
 
     @Column(nullable = false)
-    private Boolean isActive;
+    private Integer capacity;
 
     @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
