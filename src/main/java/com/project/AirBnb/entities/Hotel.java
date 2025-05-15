@@ -33,6 +33,9 @@ public class Hotel {
     @Embedded
     private HotelContactInfo contactInfo;
 
+    @ManyToOne
+    private User owner;
+
     @Column(nullable = false)
     private Boolean isActive;
 
