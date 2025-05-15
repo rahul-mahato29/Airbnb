@@ -1,4 +1,7 @@
 package com.project.AirBnb.services;
 
-public class InventoryServiceImpl {
+import org.springframework.stereotype.Service;
+
+@Service
+public class InventoryServiceImpl implements InventoryService{
 }

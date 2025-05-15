@@ -1,4 +1,7 @@
 package com.project.AirBnb.services;
 
-public class RoomServiceImpl {
+import org.springframework.stereotype.Service;
+
+@Service
+public class RoomServiceImpl implements RoomService{
 }

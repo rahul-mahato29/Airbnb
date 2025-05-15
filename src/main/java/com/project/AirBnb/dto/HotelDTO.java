@@ -1,7 +1,9 @@
 package com.project.AirBnb.dto;
 
 import com.project.AirBnb.entities.HotelContactInfo;
+import lombok.Data;
 
+@Data
 public class HotelDTO {
     private Long id;
     private String name;
