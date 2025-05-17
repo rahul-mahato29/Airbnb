@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -28,11 +31,43 @@ public class HotelServiceImpl implements HotelService{
     }
 
     @Override
+    public List<HotelDTO> getAllHotel() {
+        log.info("Getting all hotels");
+        List<Hotel> hotels = hotelRepository.findAll();
+        return hotels
+                .stream()
+                .map(hotel -> modelMapper.map(hotel, HotelDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public HotelDTO getHotelById(Long id) {
         log.info("Getting the hotel with Id : {}", id);
         Hotel hotel = hotelRepository
                 .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Hotel not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with ID: "+id));
         return modelMapper.map(hotel, HotelDTO.class);
+    }
+
+    @Override
+    public HotelDTO updateHotelById(Long hotelId, HotelDTO updatedDetails) {
+        log.info("Updating the hotel with ID : {}", hotelId);
+        Hotel hotel = hotelRepository
+                .findById(hotelId)
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with ID: "+hotelId));
+        modelMapper.map(updatedDetails, hotel); //updating with new details (source --> destination)
+        hotel.setId(hotelId);
+        hotel = hotelRepository.save(hotel);
+        return modelMapper.map(hotel, HotelDTO.class);
+    }
+
+    @Override
+    public void deleteHotelById(Long hotelId) {
+        log.info("Deleting the hotel with ID : {}", hotelId);
+        boolean exists = hotelRepository.existsById(hotelId);
+        if(!exists) throw new ResourceNotFoundException("Hotel not found with ID: "+hotelId);
+
+        hotelRepository.deleteById(hotelId);
+        //Todo: delete the future inventories for this hotel, not deleting the hotel directly
     }
 }
