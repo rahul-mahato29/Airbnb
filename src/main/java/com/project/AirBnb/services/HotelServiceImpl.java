@@ -2,6 +2,7 @@ package com.project.AirBnb.services;
 
 import com.project.AirBnb.dto.HotelDTO;
 import com.project.AirBnb.entities.Hotel;
+import com.project.AirBnb.entities.Room;
 import com.project.AirBnb.exceptions.ResourceNotFoundException;
 import com.project.AirBnb.repositories.HotelRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class HotelServiceImpl implements HotelService{
 
     private final HotelRepository hotelRepository;
+    private final InventoryService inventoryService;
     private final ModelMapper modelMapper;
 
     @Override
@@ -64,11 +66,16 @@ public class HotelServiceImpl implements HotelService{
     @Override
     public void deleteHotelById(Long hotelId) {
         log.info("Deleting the hotel with ID : {}", hotelId);
-        boolean exists = hotelRepository.existsById(hotelId);
-        if (!exists) throw new ResourceNotFoundException("Hotel not found with ID: " + hotelId);
+        Hotel hotel = hotelRepository
+                .findById(hotelId)
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with ID: "+hotelId));
 
         hotelRepository.deleteById(hotelId);
-        //Todo: delete the future inventories for this hotel, not deleting the hotel directly
+
+        //delete all future inventories for this hotel, not deleting the hotel directly only delete inventory
+        for(Room room: hotel.getRoom()) {
+            inventoryService.deleteFutureInventories(room);
+        }
     }
 
     @Override
@@ -78,6 +85,10 @@ public class HotelServiceImpl implements HotelService{
                 .findById(hotelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with ID: "+hotelId));
         hotel.setIsActive(true);
-        //Todo: create inventory for all the rooms for this hotel
+
+        //Todo: create inventory for all the rooms for this hotel (Doubt)
+        for(Room room: hotel.getRoom()) {
+            inventoryService.initializeRoomForAYear(room);
+        }
     }
 }
