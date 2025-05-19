@@ -5,6 +5,7 @@ import com.project.AirBnb.entities.Hotel;
 import com.project.AirBnb.entities.Room;
 import com.project.AirBnb.exceptions.ResourceNotFoundException;
 import com.project.AirBnb.repositories.HotelRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -64,6 +65,7 @@ public class HotelServiceImpl implements HotelService{
     }
 
     @Override
+    @Transactional
     public void deleteHotelById(Long hotelId) {
         log.info("Deleting the hotel with ID : {}", hotelId);
         Hotel hotel = hotelRepository
@@ -79,6 +81,7 @@ public class HotelServiceImpl implements HotelService{
     }
 
     @Override
+    @Transactional
     public void activateHotel(Long hotelId) {
         log.info("Activating the hotel with ID : {}", hotelId);
         Hotel hotel = hotelRepository
