@@ -1,4 +1,4 @@
-package com.project.AirBnb.services;
+package com.project.AirBnb.services.Impl;
 
 import com.project.AirBnb.dto.RoomDTO;
 import com.project.AirBnb.entities.Hotel;
@@ -6,6 +6,8 @@ import com.project.AirBnb.entities.Room;
 import com.project.AirBnb.exceptions.ResourceNotFoundException;
 import com.project.AirBnb.repositories.HotelRepository;
 import com.project.AirBnb.repositories.RoomRepository;
+import com.project.AirBnb.services.InventoryService;
+import com.project.AirBnb.services.RoomService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +20,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class RoomServiceImpl implements RoomService{
+public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
     private final HotelRepository hotelRepository;
@@ -85,6 +87,6 @@ public class RoomServiceImpl implements RoomService{
         //Issue: facing issue in deleting the room (will check later)***
         roomRepository.deleteById(roomId);
         //delete all future inventory for this room
-        inventoryService.deleteFutureInventories(room);
+        inventoryService.deleteAllInventories(room);
     }
 }

@@ -1,10 +1,13 @@
-package com.project.AirBnb.services;
+package com.project.AirBnb.services.Impl;
 
 import com.project.AirBnb.dto.HotelDTO;
 import com.project.AirBnb.entities.Hotel;
 import com.project.AirBnb.entities.Room;
 import com.project.AirBnb.exceptions.ResourceNotFoundException;
 import com.project.AirBnb.repositories.HotelRepository;
+import com.project.AirBnb.repositories.RoomRepository;
+import com.project.AirBnb.services.HotelService;
+import com.project.AirBnb.services.InventoryService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,11 +20,12 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class HotelServiceImpl implements HotelService{
+public class HotelServiceImpl implements HotelService {
 
     private final HotelRepository hotelRepository;
     private final InventoryService inventoryService;
     private final ModelMapper modelMapper;
+    private final RoomRepository roomRepository;
 
     @Override
     public HotelDTO createNewHotel(HotelDTO hotelDTO) {
@@ -72,12 +76,12 @@ public class HotelServiceImpl implements HotelService{
                 .findById(hotelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with ID: "+hotelId));
 
-        hotelRepository.deleteById(hotelId);
-
         //delete all future inventories for this hotel, not deleting the hotel directly only delete inventory
         for(Room room: hotel.getRoom()) {
-            inventoryService.deleteFutureInventories(room);
+            inventoryService.deleteAllInventories(room);
+            roomRepository.deleteById(room.getId());
         }
+        hotelRepository.deleteById(hotelId);
     }
 
     @Override

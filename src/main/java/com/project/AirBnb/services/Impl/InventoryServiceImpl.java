@@ -1,8 +1,9 @@
-package com.project.AirBnb.services;
+package com.project.AirBnb.services.Impl;
 
 import com.project.AirBnb.entities.Inventory;
 import com.project.AirBnb.entities.Room;
 import com.project.AirBnb.repositories.InventoryRepository;
+import com.project.AirBnb.services.InventoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class InventoryServiceImpl implements InventoryService{
+public class InventoryServiceImpl implements InventoryService {
 
     private final InventoryRepository inventoryRepository;
 
@@ -41,8 +42,7 @@ public class InventoryServiceImpl implements InventoryService{
     }
 
     @Override
-    public void deleteFutureInventories(Room room) {
-        LocalDate today = LocalDate.now();
-        inventoryRepository.deleteByDateAfterAndRoom(today, room);
+    public void deleteAllInventories(Room room) {
+        inventoryRepository.deleteByRoom(room);
     }
 }
