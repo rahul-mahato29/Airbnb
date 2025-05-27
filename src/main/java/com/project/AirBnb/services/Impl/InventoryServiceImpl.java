@@ -1,11 +1,16 @@
 package com.project.AirBnb.services.Impl;
 
+import com.project.AirBnb.dto.HotelDTO;
+import com.project.AirBnb.dto.HotelSearchRequest;
 import com.project.AirBnb.entities.Inventory;
 import com.project.AirBnb.entities.Room;
 import com.project.AirBnb.repositories.InventoryRepository;
 import com.project.AirBnb.services.InventoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -44,5 +49,12 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     public void deleteAllInventories(Room room) {
         inventoryRepository.deleteByRoom(room);
+    }
+
+    @Override
+    public Page<HotelDTO> searchHotels(HotelSearchRequest hotelSearchRequest) {
+        Pageable pageable = PageRequest.of(hotelSearchRequest.getPage(), hotelSearchRequest.getSize());
+        
+        return null;
     }
 }
