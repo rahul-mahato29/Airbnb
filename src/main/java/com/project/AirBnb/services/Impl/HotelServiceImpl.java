@@ -1,6 +1,8 @@
 package com.project.AirBnb.services.Impl;
 
 import com.project.AirBnb.dto.HotelDTO;
+import com.project.AirBnb.dto.HotelInfoDTO;
+import com.project.AirBnb.dto.RoomDTO;
 import com.project.AirBnb.entities.Hotel;
 import com.project.AirBnb.entities.Room;
 import com.project.AirBnb.exceptions.ResourceNotFoundException;
@@ -97,5 +99,21 @@ public class HotelServiceImpl implements HotelService {
         for(Room room: hotel.getRoom()) {
             inventoryService.initializeRoomForAYear(room);
         }
+    }
+
+    @Override
+    public HotelInfoDTO getHotelInfoById(Long hotelId) {
+        log.info("Getting the hotelInfo with Id : {}", hotelId);
+        Hotel hotel = hotelRepository
+                .findById(hotelId)
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with ID: "+hotelId));
+
+        //show available rooms of the hotel to the user (review once)
+        List<RoomDTO> rooms = hotel.getRoom()
+                .stream()
+                .map((element) -> modelMapper.map(element, RoomDTO.class))
+                .toList();
+
+        return new HotelInfoDTO(modelMapper.map(hotel, HotelDTO.class), rooms);
     }
 }
