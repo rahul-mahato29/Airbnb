@@ -15,9 +15,6 @@ import java.util.Set;
 public class BookingDTO {
 
     private Long id;
-    private Hotel hotel;
-    private Room room;
-    private User user;
     private BookingStatus bookingStatus;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;

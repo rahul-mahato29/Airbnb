@@ -61,7 +61,7 @@ public class BookingServiceImpl implements BookingService {
         log.info("Checking : {}", bookingRequest.getRoomsCount());
         //Reserve the room/ update the booked count of inventories
         for(Inventory inventory : inventoryList) {
-            inventory.setBookedCount(inventory.getBookedCount() + bookingRequest.getRoomsCount());
+            inventory.setReservedCount(inventory.getReservedCount() + bookingRequest.getRoomsCount());
         }
 
         inventoryRepository.saveAll(inventoryList);
@@ -78,7 +78,7 @@ public class BookingServiceImpl implements BookingService {
                 .room(room)
                 .checkInDate(bookingRequest.getCheckInDate())
                 .checkOutDate(bookingRequest.getCheckOutDate())
-                .user(new User())
+                .user(user)
                 .roomCount(bookingRequest.getRoomsCount())
                 .amount(BigDecimal.TEN)
                 .build();
