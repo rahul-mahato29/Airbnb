@@ -51,7 +51,7 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
             @Param("roomId") Long roomId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate,
-            @Param("roomsCound") Integer roomsCount
+            @Param("roomsCount") Integer roomsCount
     );
 }
 

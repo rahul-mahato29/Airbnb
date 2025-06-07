@@ -58,6 +58,7 @@ public class BookingServiceImpl implements BookingService {
             throw new IllegalStateException("Room is not available anymore");
         }
 
+        log.info("Checking : {}", bookingRequest.getRoomsCount());
         //Reserve the room/ update the booked count of inventories
         for(Inventory inventory : inventoryList) {
             inventory.setBookedCount(inventory.getBookedCount() + bookingRequest.getRoomsCount());
