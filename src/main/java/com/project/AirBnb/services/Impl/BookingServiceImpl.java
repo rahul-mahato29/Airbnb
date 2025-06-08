@@ -2,13 +2,11 @@ package com.project.AirBnb.services.Impl;
 
 import com.project.AirBnb.dto.BookingDTO;
 import com.project.AirBnb.dto.BookingRequest;
+import com.project.AirBnb.dto.GuestDTO;
 import com.project.AirBnb.entities.*;
 import com.project.AirBnb.entities.enums.BookingStatus;
 import com.project.AirBnb.exceptions.ResourceNotFoundException;
-import com.project.AirBnb.repositories.BookingRepository;
-import com.project.AirBnb.repositories.HotelRepository;
-import com.project.AirBnb.repositories.InventoryRepository;
-import com.project.AirBnb.repositories.RoomRepository;
+import com.project.AirBnb.repositories.*;
 import com.project.AirBnb.services.BookingService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -29,6 +28,7 @@ public class BookingServiceImpl implements BookingService {
     private final HotelRepository hotelRepository;
     private final RoomRepository roomRepository;
     private final InventoryRepository inventoryRepository;
+    private final GuestRepository guestRepository;
     private final ModelMapper modelMapper;
 
     @Override
@@ -67,8 +67,6 @@ public class BookingServiceImpl implements BookingService {
         inventoryRepository.saveAll(inventoryList);
 
         //Create/Initialise the booking
-        User user = new User();
-        user.setId(1l); //TODO: REMOVE DUMMY USER
 
         //TODO: Calculate dynamic price
 
@@ -78,13 +76,58 @@ public class BookingServiceImpl implements BookingService {
                 .room(room)
                 .checkInDate(bookingRequest.getCheckInDate())
                 .checkOutDate(bookingRequest.getCheckOutDate())
-                .user(user)
+                .user(getCurrentUser())
                 .roomCount(bookingRequest.getRoomsCount())
                 .amount(BigDecimal.TEN)
                 .build();
 
         booking = bookingRepository.save(booking);
         return modelMapper.map(booking, BookingDTO.class);
+    }
+
+
+    @Override
+    @Transactional
+    public BookingDTO addGuests(Long bookingId, List<GuestDTO> guestDTOList) {
+        log.info("Adding guests for booking id : {}", bookingId);
+
+        Booking booking = bookingRepository
+                .findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found for Id: "+bookingId));
+
+        if(hasBookingExpired(booking)) {
+            throw new IllegalStateException("Booking has already expired");
+        }
+
+        //confirm booking state
+        if(booking.getBookingStatus() != BookingStatus.RESERVED) {
+            throw new IllegalStateException("Booking is not under reserved state, cannot add guests");
+        }
+
+        //add each guest into the booking
+        for(GuestDTO guestDTO: guestDTOList) {
+            Guest guest = modelMapper.map(guestDTO, Guest.class);
+            guest.setUser(getCurrentUser());
+            guest = guestRepository.save(guest);
+
+            booking.getGuests().add(guest);
+        }
+
+        booking.setBookingStatus(BookingStatus.GUESTS_ADDED);
+        booking = bookingRepository.save(booking);
+
+        return modelMapper.map(booking, BookingDTO.class);
+    }
+
+
+    public boolean hasBookingExpired(Booking booking) {
+        return booking.getCreatedAt().plusMinutes(10).isBefore(LocalDateTime.now());
+    }
+
+    public User getCurrentUser() {
+        User user = new User();
+        user.setId(1L); //TODO: REMOVE DUMMY USER
+        return user;
     }
 }
 
