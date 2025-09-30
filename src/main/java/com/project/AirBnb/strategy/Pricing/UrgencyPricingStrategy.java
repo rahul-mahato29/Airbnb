@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Service
 @RequiredArgsConstructor
 public class UrgencyPricingStrategy implements PricingStrategy{
 
