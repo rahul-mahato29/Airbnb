@@ -18,7 +18,7 @@ public class Room {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hotel_id", nullable = false)
+    @JoinColumn(name = "hotel_id", nullable = false)    //many homes can belong to one hotel
     private Hotel hotel;
 
     @Column(nullable = false)

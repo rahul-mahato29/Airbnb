@@ -1,4 +1,4 @@
-package strategy.Pricing;
+package com.project.AirBnb.strategy.Pricing;
 
 import com.project.AirBnb.entities.Inventory;
 

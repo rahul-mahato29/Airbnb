@@ -17,6 +17,10 @@ public class HotelMinPrice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id")
+    private Hotel hotel;
+
     @Column(nullable = false)
     private LocalDate date;
 

@@ -1,4 +1,4 @@
-package strategy.Pricing;
+package com.project.AirBnb.strategy.Pricing;
 
 import com.project.AirBnb.entities.Inventory;
 import lombok.RequiredArgsConstructor;
@@ -8,19 +8,17 @@ import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
-public class HolidayPricingStrategy implements PricingStrategy{
+public class OccupancyPricingStrategy implements PricingStrategy{
 
     private final PricingStrategy wrapped;
-
     @Override
     public BigDecimal calculatePrice(Inventory inventory) {
         BigDecimal price = wrapped.calculatePrice(inventory);
-        boolean isTodayHoliday = true; //call an API or check with local data
-
-        if(isTodayHoliday) {
-            price = price.multiply(BigDecimal.valueOf(1.5));
+        double occupancyRate = (double) inventory.getBookedCount() / inventory.getTotalCount();
+        //more than 80%
+        if(occupancyRate > 0.8) {
+            price = price.multiply(BigDecimal.valueOf(1.2));
         }
-
         return price;
     }
 }
