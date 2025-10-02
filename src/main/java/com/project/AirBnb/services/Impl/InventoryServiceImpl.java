@@ -67,7 +67,8 @@ public class InventoryServiceImpl implements InventoryService {
 
         long dateCount = ChronoUnit.DAYS.between(hotelSearchRequest.getStartDate(), hotelSearchRequest.getEndDate()) + 1;
 
-        //Business-Logic : 90 days
+        //todo - required debugging - as hotels are not coming
+        //Business-Logic
         Page<HotelPriceDTO> hotelPage = hotelMinPriceRepository.findHotelsWithAvailableInventory(
                 hotelSearchRequest.getCity(),
                 hotelSearchRequest.getStartDate(),
@@ -76,7 +77,7 @@ public class InventoryServiceImpl implements InventoryService {
                 dateCount,
                 pageable
         );
-//        return hotelPage.map((elements) -> modelMapper.map(elements, HotelPriceDTO.class));
+
         return hotelPage;
     }
 }
