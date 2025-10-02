@@ -17,12 +17,13 @@ import java.util.Optional;
 public interface HotelMinPriceRepository extends JpaRepository<HotelMinPrice, Long > {
 
     @Query("""
-            SELECT com.project.AirBnb.dto.HotelPriceDTO(i.hotel, AVG(i.price))
+            SELECT new com.project.AirBnb.dto.HotelPriceDTO(i.hotel, AVG(i.price))
             FROM HotelMinPrice i
-            WHERE i.hotel.city = :city
+            WHERE LOWER(i.hotel.city) = LOWER(:city)
                 AND i.date BETWEEN :startDate AND :endDate
                 AND i.hotel.isActive = true
             GROUP BY i.hotel
+            HAVING COUNT(DISTINCT i.date) = :dateCount
             """)
     Page<HotelPriceDTO> findHotelsWithAvailableInventory(
             @Param("city") String city,
