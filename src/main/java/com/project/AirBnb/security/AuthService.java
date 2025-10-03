@@ -27,10 +27,10 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
     private final UserService userService;
-    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final SessionService sessionService;
+    private final UserRepository userRepository;
 
     public UserDTO signUp(SignUpDTO singUpDTO) {
         Optional<User> user = userRepository.findByEmail(singUpDTO.getEmail());
@@ -58,6 +58,7 @@ public class AuthService {
 
         return new LoginResponseDTO(user.getId(), accessToken, refreshToken);
     }
+
 
     //we will use refreshToken to generate access token
     public LoginResponseDTO refreshToken(String refreshToken) {
