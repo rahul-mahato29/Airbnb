@@ -8,6 +8,7 @@ import com.project.AirBnb.entities.User;
 import com.project.AirBnb.entities.enums.Role;
 import com.project.AirBnb.repositories.UserRepository;
 import com.project.AirBnb.services.UserService;
+import lombok.Data;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Data
 @RequiredArgsConstructor
 public class AuthService {
 

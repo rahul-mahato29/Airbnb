@@ -6,12 +6,16 @@ import com.project.AirBnb.repositories.UserRepository;
 import com.project.AirBnb.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -21,5 +25,11 @@ public class UserServiceImpl implements UserService {
         log.info("Getting user with id : {}", id);
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with id : "+ id));
         return user;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByEmail(username)
+                .orElseThrow(() -> new BadCredentialsException("User - " + username + " not found"));
     }
 }
