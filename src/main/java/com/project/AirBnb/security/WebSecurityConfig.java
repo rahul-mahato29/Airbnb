@@ -23,7 +23,7 @@ public class WebSecurityConfig {
     private final JWTAuthFilter jwtAuthFilter;
 
     private static final String[] publicRoutes = {
-            "/error", "/auth/*", "/home.html"
+            "/error", "/auth/**", "/home.html", "/admin/**", "/hotels/**", "/booking/**"
     };
 
     @Bean
@@ -34,10 +34,9 @@ public class WebSecurityConfig {
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers(publicRoutes).permitAll()
-                        .requestMatchers("/admin/**").hasRole("HOTEL_MANAGER")
-                        .requestMatchers("/bookings/**").authenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers(publicRoutes).permitAll()
+//                        .requestMatchers("/admin/**").hasAuthority("HOTEL_MANAGER")
+//                        .requestMatchers("/bookings/**").authenticated()
                 );
 
         return httpSecurity.build();

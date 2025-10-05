@@ -1,11 +1,13 @@
 package com.project.AirBnb.services.Impl;
 
+import com.project.AirBnb.dto.UserDTO;
 import com.project.AirBnb.entities.User;
 import com.project.AirBnb.exceptions.ResourceNotFoundException;
 import com.project.AirBnb.repositories.UserRepository;
 import com.project.AirBnb.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public User getUserById(Long id) {
@@ -25,6 +28,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         log.info("Getting user with id : {}", id);
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with id : "+ id));
         return user;
+    }
+
+    @Override
+    public UserDTO getUserDetailsById(Long id) {
+        log.info("Getting userDetails with id : {}", id);
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with id : "+ id));
+        return modelMapper.map(user, UserDTO.class);
     }
 
     @Override

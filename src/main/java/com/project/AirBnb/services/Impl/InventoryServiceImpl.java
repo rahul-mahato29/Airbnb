@@ -61,7 +61,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public Page<HotelPriceDTO> searchHotels(HotelSearchRequest hotelSearchRequest) {
+    public Page<HotelDTO> searchHotels(HotelSearchRequest hotelSearchRequest) {
         log.info("Searching hotels for {} city, from {} to {}", hotelSearchRequest.getCity(), hotelSearchRequest.getStartDate(), hotelSearchRequest.getEndDate());
         Pageable pageable = PageRequest.of(hotelSearchRequest.getPage(), hotelSearchRequest.getSize());
 
@@ -69,7 +69,7 @@ public class InventoryServiceImpl implements InventoryService {
 
         //todo - required debugging - as hotels are not coming
         //Business-Logic
-        Page<HotelPriceDTO> hotelPage = hotelMinPriceRepository.findHotelsWithAvailableInventory(
+        Page<Hotel> hotelPage = inventoryRepository.findHotelsWithAvailableInventory(
                 hotelSearchRequest.getCity(),
                 hotelSearchRequest.getStartDate(),
                 hotelSearchRequest.getEndDate(),
@@ -78,6 +78,6 @@ public class InventoryServiceImpl implements InventoryService {
                 pageable
         );
 
-        return hotelPage;
+        return hotelPage.map((ele) -> modelMapper.map(ele, HotelDTO.class));
     }
 }

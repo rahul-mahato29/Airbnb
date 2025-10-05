@@ -23,7 +23,7 @@ public interface HotelMinPriceRepository extends JpaRepository<HotelMinPrice, Lo
                 AND i.date BETWEEN :startDate AND :endDate
                 AND i.hotel.isActive = true
             GROUP BY i.hotel
-            HAVING COUNT(DISTINCT i.date) = :dateCount
+            HAVING COUNT(DISTINCT i.date) >= :dateCount
             """)
     Page<HotelPriceDTO> findHotelsWithAvailableInventory(
             @Param("city") String city,

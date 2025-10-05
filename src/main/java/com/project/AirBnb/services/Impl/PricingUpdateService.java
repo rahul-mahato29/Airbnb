@@ -36,6 +36,7 @@ public class PricingUpdateService {
     private final HotelMinPriceRepository hotelMinPriceRepository;
     private final PricingService pricingService;
 
+//    @Scheduled(cron = "*/5 * * * * *")   //In every 5 second
     @Scheduled(cron = "0 0 * * * *")     //In every 1 hour (check :: Corn Scheduler), run this updatePrice method (scheduler)
     public void updatePrices() {
         int page = 0;

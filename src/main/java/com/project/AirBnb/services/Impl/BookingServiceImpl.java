@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -66,10 +67,6 @@ public class BookingServiceImpl implements BookingService {
 
         inventoryRepository.saveAll(inventoryList);
 
-        //Create/Initialise the booking
-
-        //TODO: Calculate dynamic price
-
         Booking booking = Booking.builder()
                 .bookingStatus(BookingStatus.RESERVED)
                 .hotel(hotel)
@@ -119,15 +116,12 @@ public class BookingServiceImpl implements BookingService {
         return modelMapper.map(booking, BookingDTO.class);
     }
 
-
     public boolean hasBookingExpired(Booking booking) {
         return booking.getCreatedAt().plusMinutes(10).isBefore(LocalDateTime.now());
     }
 
     public User getCurrentUser() {
-        User user = new User();
-        user.setId(1L); //TODO: REMOVE DUMMY USER
-        return user;
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }
 
