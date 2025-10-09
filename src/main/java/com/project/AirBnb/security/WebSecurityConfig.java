@@ -23,7 +23,7 @@ public class WebSecurityConfig {
     private final JWTAuthFilter jwtAuthFilter;
 
     private static final String[] publicRoutes = {
-            "/error", "/auth/**", "/home.html", "/admin/**", "/hotels/**", "/booking/**"
+            "/error", "/auth/**", "/home.html", "/admin/**", "/hotels/**"
     };
 
     @Bean
@@ -36,7 +36,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(publicRoutes).permitAll()
 //                        .requestMatchers("/admin/**").hasAuthority("HOTEL_MANAGER")
-//                        .requestMatchers("/bookings/**").authenticated()
+                        .requestMatchers("/bookings/**").authenticated()
                 );
 
         return httpSecurity.build();
