@@ -6,12 +6,15 @@ import com.project.AirBnb.dto.GuestDTO;
 import com.project.AirBnb.entities.*;
 import com.project.AirBnb.entities.enums.BookingStatus;
 import com.project.AirBnb.exceptions.ResourceNotFoundException;
+import com.project.AirBnb.exceptions.UnAuthorisedException;
 import com.project.AirBnb.repositories.*;
 import com.project.AirBnb.services.BookingService;
+import com.project.AirBnb.services.CheckoutService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +34,10 @@ public class BookingServiceImpl implements BookingService {
     private final InventoryRepository inventoryRepository;
     private final GuestRepository guestRepository;
     private final ModelMapper modelMapper;
+    private final CheckoutService checkoutService;
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     @Override
     @Transactional
@@ -92,6 +99,11 @@ public class BookingServiceImpl implements BookingService {
                 .findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found for Id: "+bookingId));
 
+        User user = getCurrentUser();
+        if(!user.equals(booking.getUser())) {
+            throw new UnAuthorisedException("Booking does not belong to this user with id : "+user.getId());
+        }
+
         if(hasBookingExpired(booking)) {
             throw new IllegalStateException("Booking has already expired");
         }
@@ -114,6 +126,30 @@ public class BookingServiceImpl implements BookingService {
         booking = bookingRepository.save(booking);
 
         return modelMapper.map(booking, BookingDTO.class);
+    }
+
+    @Override
+    public String initialisePayment(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(
+                () -> new ResourceNotFoundException("Booking not found with id : "+ bookingId)
+        );
+
+        User user = getCurrentUser();
+        if(!user.equals(booking.getUser())) {
+            throw new UnAuthorisedException("Booking does not belong to this user with id : "+user.getId());
+        }
+
+        if(hasBookingExpired(booking)) {
+            throw new IllegalStateException("Booking has already expired");
+        }
+
+        //in frontend, you have to make this frontend-success and failure url
+        String sessionUrl = checkoutService.getCheckoutSession(booking, frontendUrl+"payments/success", frontendUrl+"payments/failure");
+
+        booking.setBookingStatus(BookingStatus.PAYMENTS_PENDING);
+        bookingRepository.save(booking);
+
+        return sessionUrl;
     }
 
     public boolean hasBookingExpired(Booking booking) {
