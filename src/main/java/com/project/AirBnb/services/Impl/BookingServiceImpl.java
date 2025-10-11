@@ -82,7 +82,7 @@ public class BookingServiceImpl implements BookingService {
                 .checkOutDate(bookingRequest.getCheckOutDate())
                 .user(getCurrentUser())
                 .roomCount(bookingRequest.getRoomsCount())
-                .amount(BigDecimal.TEN)
+                .amount(BigDecimal.valueOf(1000))
                 .build();
 
         booking = bookingRepository.save(booking);
@@ -144,7 +144,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         //in frontend, you have to make this frontend-success and failure url
-        String sessionUrl = checkoutService.getCheckoutSession(booking, frontendUrl+"payments/success", frontendUrl+"payments/failure");
+        String sessionUrl = checkoutService.getCheckoutSession(booking, frontendUrl+"/payments/success", frontendUrl+"/payments/failure");
 
         booking.setBookingStatus(BookingStatus.PAYMENTS_PENDING);
         bookingRepository.save(booking);
