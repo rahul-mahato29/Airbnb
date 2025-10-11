@@ -1,4 +1,4 @@
-package com.project.AirBnb.advice;
+package com.project.AirBnb.configs;
 
 import com.stripe.Stripe;
 import org.springframework.beans.factory.annotation.Value;
