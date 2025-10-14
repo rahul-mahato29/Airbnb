@@ -71,12 +71,12 @@ public class BookingServiceImpl implements BookingService {
         }
 
         log.info("Checking : {}", bookingRequest.getRoomsCount());
-        //Reserve the room/ update the booked count of inventories
-        for(Inventory inventory : inventoryList) {
-            inventory.setReservedCount(inventory.getReservedCount() + bookingRequest.getRoomsCount());
-        }
 
-        inventoryRepository.saveAll(inventoryList);
+        //Reserve the room/ update the booked count of inventories
+        inventoryRepository.initBooking(room.getId(), bookingRequest.getCheckInDate(),
+                bookingRequest.getCheckOutDate(), bookingRequest.getRoomsCount());
+
+        //todo - calculate dynamic pricing
 
         Booking booking = Booking.builder()
                 .bookingStatus(BookingStatus.RESERVED)
