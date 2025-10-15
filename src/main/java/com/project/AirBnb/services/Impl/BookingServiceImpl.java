@@ -10,6 +10,7 @@ import com.project.AirBnb.exceptions.UnAuthorisedException;
 import com.project.AirBnb.repositories.*;
 import com.project.AirBnb.services.BookingService;
 import com.project.AirBnb.services.CheckoutService;
+import com.project.AirBnb.strategy.Pricing.PricingService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 import com.stripe.model.checkout.Session;
@@ -39,6 +40,7 @@ public class BookingServiceImpl implements BookingService {
     private final GuestRepository guestRepository;
     private final ModelMapper modelMapper;
     private final CheckoutService checkoutService;
+    private final PricingService pricingService;
 
     @Value("${frontend.url}")
     private String frontendUrl;
@@ -72,11 +74,13 @@ public class BookingServiceImpl implements BookingService {
 
         log.info("Checking : {}", bookingRequest.getRoomsCount());
 
-        //Reserve the room/ update the booked count of inventories
+        // Reserve the room/ update the booked count of inventories
         inventoryRepository.initBooking(room.getId(), bookingRequest.getCheckInDate(),
                 bookingRequest.getCheckOutDate(), bookingRequest.getRoomsCount());
 
-        //todo - calculate dynamic pricing
+        // calculate dynamic pricing
+        BigDecimal priceForOneRoom = pricingService.calculateTotalPrice(inventoryList);
+        BigDecimal totalPrice = priceForOneRoom.multiply(BigDecimal.valueOf(bookingRequest.getRoomsCount()));
 
         Booking booking = Booking.builder()
                 .bookingStatus(BookingStatus.RESERVED)
@@ -86,7 +90,7 @@ public class BookingServiceImpl implements BookingService {
                 .checkOutDate(bookingRequest.getCheckOutDate())
                 .user(getCurrentUser())
                 .roomCount(bookingRequest.getRoomsCount())
-                .amount(BigDecimal.valueOf(100))
+                .amount(totalPrice)
                 .build();
 
         booking = bookingRepository.save(booking);

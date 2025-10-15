@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,13 @@ public class PricingService {
         pricingStrategy = new HolidayPricingStrategy(pricingStrategy);
 
         return pricingStrategy.calculatePrice(inventory);
+    }
+
+    // return the sum of all price of given inventory list
+    public BigDecimal calculateTotalPrice(List<Inventory> inventoryList) {
+        return inventoryList.stream()
+                .map(inventory -> calculateDynamicPricing(inventory))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 }
