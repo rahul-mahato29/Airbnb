@@ -23,7 +23,8 @@ public class WebSecurityConfig {
     private final JWTAuthFilter jwtAuthFilter;
 
     private static final String[] publicRoutes = {
-            "/error", "/auth/**", "/home.html", "/admin/**", "/hotels/**", "/webhooks/**"
+            "/error", "/auth/**", "/home.html", "/admin/**", "/hotels/**", "/webhooks/**", "/v3/api-docs/**",
+            "/swagger-ui/**", "/swagger-ui.html"
     };
 
     @Bean

@@ -1,12 +1,9 @@
 package com.project.AirBnb.dto;
 
-import com.project.AirBnb.entities.Guest;
-import com.project.AirBnb.entities.Hotel;
-import com.project.AirBnb.entities.Room;
-import com.project.AirBnb.entities.User;
 import com.project.AirBnb.entities.enums.BookingStatus;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -20,6 +17,7 @@ public class BookingDTO {
     private LocalDate checkOutDate;
     private Integer roomCount;
     private Set<GuestDTO> guests;
+    private BigDecimal amount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
