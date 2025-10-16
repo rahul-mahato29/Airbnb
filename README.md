@@ -1,4 +1,4 @@
-# 📌 AirBnb Backend — Hotel Booking & Management System
+# 📌 AirBnb — Hotel Booking & Management System
 
 A production-ready Spring Boot backend for a hotel booking / management platform
 
