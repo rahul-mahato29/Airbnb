@@ -1,10 +1,10 @@
-# 📌 AirBnb — Hotel Booking & Management System
+# 📌 BookNStay — Hotel Booking & Management System
 
 A production-ready Spring Boot backend for a hotel booking / management platform
 
-Project Demo : [Video-Link](https://github.com/rahul-mahato29)
+Project Demo : [Video-Link](https://github.com/rahul-mahato29) (Uploading Soon...)
 
-Technical Documentation : [Document-Link](https://github.com/rahul-mahato29)
+Technical Documentation : [Document-Link](https://github.com/rahul-mahato29) (Updating Soon...)
 
 ## 🚀 Application Flow
 ![Rough Flow](images/Rough_Flow.png)
